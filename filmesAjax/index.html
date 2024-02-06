@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+	<meta charset="utf-8">
+	<title>Filmes AJAX/AJAJ</title>
+	<style>
+		#btnCarregar{
+			background-color: navy;
+			padding:10px;
+			color: white;
+			font-weight: bold;
+			border-radius: 6px;
+		}
+		#btnCarregar:hover{
+			background-color: orange;
+			padding:10px;
+			color: white;
+			font-weight: bold;
+			border-radius: 6px;
+		}
+		h2{
+			text-align: center;
+		}
+		#divFilmes{
+			margin:15px;
+		}
+	</style>
+</head>
+<body>
+	<header>
+		<h2>Lista de Filmes Ajaj</h2>
+		<hr/>
+	</header>
+	<main>
+		<button id="btnCarregar">Carregar Filmes</button>
+		<div id="divFilmes">
+			
+		</div>
+	</main>
+</body>
+<script>	
+	//Obtendo objeto do tipo XMLHttpRequest
+	let xhr = new XMLHttpRequest();
+
+	//Recuperando elementos do DOM pelo id
+	const $divFilmes = document.querySelector('#divFilmes');
+	const $btnCarregar = document.querySelector('#btnCarregar');
+
+	//Escutando o evento on click do botao referenciado por btnCarregar
+
+		$btnCarregar.addEventListener('click', function(){
+
+			//abrindo uma requisição Ajax via método get e solicitando o recurso filmes.json
+			//Definindo o cabeçalho
+
+			xrh.open('GET', 'filmes.json');
+			xrh.setRequestHeader("Content-Type", "application/json");
+
+			//apagando o conteudo HTML da div de id filmes
+
+			$divFilmes.innerHTML = '';
+
+			//Monitorando a mudança estado de prontidão (readyState) da requisição
+				if(xhr.readyState === 4){
+
+					//monitorando o status da requisição(se for recurso não encontrado 404)
+
+					if(xhr.status === 404){
+						console.log('Recurso não encontrado');
+					}
+				}
+
+			//monitorando o status da requisição(se for recurso encontrado 200 ou 304)
+
+			if(xrh.status === 200 || xhr.status === 304){
+
+				//recupere a propriedade responseText parsenado para um objeto do tipo JSON
+
+				let objJSON = JSON.parse(xhr.responseText);
+
+				//recupere a propriedades filmes (uma lista de objetos do tipo filme) do objeto obtido acima.
+
+				let filmes = objJSON.filmes;
+
+				//percorra a lista de filmes criando uma lista para exibir as propriedades de cada filme
+				//essa lista deverá ser pendurada da div que recuperamos
+				for(let i in filmes){
+					//obtenha um filme a cada iteração
+
+					let filme = filmes[i];
+					console.log(filme);
+					
+				}
+			}
+		})
+</script>
+</html>
