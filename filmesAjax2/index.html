@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+	<meta charset="utf-8">
+	<title>Filmes AJAX/AJAJ</title>
+	<style>
+		#btnCarregar{
+			background-color: navy;
+			padding:10px;
+			color: white;
+			font-weight: bold;
+			border-radius: 6px;
+		}
+		#btnCarregar:hover{
+			background-color: orange;
+			padding:10px;
+			color: white;
+			font-weight: bold;
+			border-radius: 6px;
+		}
+		h2{
+			text-align: center;
+		}
+		#divFilmes{
+			margin:15px;
+		}
+	</style>
+</head>
+<body>
+	<header>
+		<h2>Lista de Filmes Ajaj</h2>
+		<hr/>
+	</header>
+	<main>
+		<button id="btnCarregar">Carregar Filmes</button>
+		<div id="divFilmes">
+			
+		</div>
+	</main>
+</body>
+<script>	
+	//Obtendo objeto do tipo XMLHttpRequest
+	let xhr = new XMLHttpRequest();
+	//Recuperando elementos do DOM pelo id
+	const $divFilmes = document.querySelector('#divFilmes');
+	const $btnCarregar = document.querySelector('#btnCarregar');
+	//Escutando o evento on click do botao referenciado por btnCarregar
+		$btnCarregar.addEventListener('click', function(){
+			//abrindo uma requisição Ajax via método get e solicitando o recurso filmes.json
+			//Definindo o cabeçalho
+			xhr.open('GET', 'filmes.json');
+			xhr.setRequestHeader("Content-Type", "application/json");
+			//apagando o conteudo HTML da div de id filmes
+			$divFilmes.innerHTML = '';
+			//Monitorando a mudança estado de prontidão (readyState) da requisição
+			xhr.onreadystatechange = function(){
+				if(xhr.readyState === 4){
+					//monitorando o status da requisição(se for recurso não encontrado 404)
+					if(xhr.status === 404){
+						console.log('Recurso não encontrado');
+					}
+
+			//monitorando o status da requisição(se for recurso encontrado 200 ou 304)
+			if(xhr.status === 200 || xhr.status === 304){
+				//recupere a propriedade responseText parsenado para um objeto do tipo JSON
+				let objJSON = JSON.parse(xhr.responseText);
+				//recupere a propriedades filmes (uma lista de objetos do tipo filme) do objeto obtido acima.
+				let filmes = objJSON.filmes;
+				//percorra a lista de filmes criando uma lista para exibir as propriedades de cada filme
+				//essa lista deverá ser pendurada da div que recuperamos
+				for(let i in filmes){
+					//obtenha um filme a cada iteração
+					let filme = filmes[i];
+					console.log(filme);
+					//crie uma ul e pendure na div (divFilme)
+					const $ulFilme = document.createElement('ul');
+					$divFilmes.appendChild($ulFilme);
+					//monte uma li para cada propriedade e pendure na ul criada
+					/*const $liId = document.createElement('li');
+					$liId.innerHTML = "<strong>Id: </strong>"+filme.id;
+					$ulFilme.appendChild($liId);*/
+
+					//Refatorado
+					montaUlFilme("<strong>Id: </strong",filme.id, $ulFilme);
+
+					/*const $liTitulo = document.createElement('li');
+					$liTitulo.innerHTML = "<strong>Titulo: </strong>"+filme.titulo;
+					$ulFilme.appendChild($liTitulo);*/
+
+					montaUlFilme("<strong>Titulo: </strong>",filme.titulo, $ulFilme)
+
+					/*const $liResumo = document.createElement('li');
+					$liResumo.innerHTML = "<strong>Resumo: </strong>"+filme.resumo;
+					$ulFilme.appendChild($liResumo);*/
+
+					montaUlFilme("<strong>Resumo: </strong>",filme.resumo, $ulFilme);
+
+					/*const $liLancamento = document.createElement('li');
+					$liLancamento.innerHTML = "<strong>Lancamento: </strong>"+filme.dataLancamento.dia+" - "+filme.dataLancamento.pais;
+					$ulFilme.appendChild($liLancamento);*/
+					
+					let valorLancamento = filme.dataLancamento.dia+" - "+filme.dataLancamento.pais;
+					montaUlFilme("<strong>Lancamento: </strong>",valorLancamento, $ulFilme);
+
+					//generos
+					montaUlFilme("<strong>Generos: </strong>","",$ulFilme);
+					const $ulGeneros = document.createElement('ul');
+					$ulFilme.appendChild($ulGeneros);
+					for(const i in filme.generos){
+						let genero = filme.generos[i];
+						let li = document.createElement('li');
+						$ulGeneros.appendChild(li);
+						li.textContent = genero;
+					}
+
+					//elenco
+					montaUlFilme("<strong>Elenco: </strong>","",$ulFilme);
+					const $ulElenco = document.createElement('ul');
+					$ulFilme.append
+					//crie uma linha horizontal para separar cada filme e pendure na div
+					$linhaHr = document.createElement('hr');
+					$divFilmes.appendChild($linhaHr);
+				}//fim do for
+			}//fim da verificação de status 200 ou 304
+		}//fim da verificação readystate 4
+	}//fim do monitoramento do readyState
+	 //enviando a requisição ajax(ajaj). Não precisa estar aqui no fim
+	 xhr.send();
+}); //fim do monitoramento do evento click
+
+function montaUlFilme(rotulo, valor, noPai){
+	let li = document.createElement('li');
+	noPai.appendChild(li);
+	li.innerHTML = rotulo + valor;
+}
+
+</script>
+</html>
